@@ -45,8 +45,8 @@ label.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 
 <body>
 <header class="top"><a href="index.html"><img src="media/brand/logo.svg" alt="Regina"></a></header>
 <div class="wrap" id="app"></div>
-<script src="data.js?v=1"></script>
-<script src="core.js?v=1"></script>
+<script src="data.js?v=3"></script>
+<script src="core.js?v=4"></script>
 <script>
 (function(){
   const K=window.RGK, app=document.getElementById('app'), ls=K.lines(), lead=K.getLead()||{};
@@ -92,11 +92,18 @@ label.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 
     </div>
   </div></aside>`;
   document.querySelectorAll('.opt input').forEach(i=>i.addEventListener('change',()=>{i.closest('.box').querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o.contains(i)))}));
-  document.getElementById('f').addEventListener('submit',e=>{
+  const f=document.getElementById('f');
+  f.querySelector('[name=phone]').required=true;
+  f.querySelector('.pay').insertAdjacentHTML('beforebegin','<p id="err" role="alert" hidden style="color:var(--err);font-size:14px;margin:16px 0 0">Completa correo, nombre, apellidos y un teléfono de 10 dígitos</p>');
+  f.addEventListener('submit',e=>{
     e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());
-    if(!/\S+@\S+\.\S+/.test(d.email||'')){document.getElementById('em').focus();return;}
+    const ok=/\S+@\S+\.\S+/.test(d.email||'')&&d.first&&d.last&&K.e164(d.phone);
+    document.getElementById('err').hidden=!!ok;
+    if(!ok){const bad=[...f.querySelectorAll('input[name]')].find(i=>(i.name==='email'&&!/\S+@\S+\.\S+/.test(i.value))||(['first','last'].includes(i.name)&&!i.value)||(i.name==='phone'&&!K.e164(i.value)));bad&&bad.focus();return;}
     const nl={...lead,...d};try{localStorage.setItem('regina-lead',JSON.stringify(nl))}catch(er){}
-    location.href=K.checkoutUrl(nl);
+    const changed=['email','first','last','phone','zip','city','address'].some(k=>(lead[k]||'')!==(nl[k]||''));
+    const btn=f.querySelector('.pay');btn.disabled=true;btn.textContent='Abriendo pago seguro…';
+    (changed||!lead.email?K.sendLead(nl,'checkout'):Promise.resolve()).finally(()=>{location.href=K.checkoutUrl(nl);});
   });
 })();
 </script>

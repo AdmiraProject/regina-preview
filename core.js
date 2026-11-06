@@ -100,6 +100,35 @@
     }
   };
 
+  /* ---------- lead capture → Regina's Klaviyo (public site key from regina.com.mx) ---------- */
+  // Sent BEFORE redirecting to checkout, so the contact + cart exist even if the shopper never pays.
+  // Set window.REGINA_LEADS_OFF = true to disable (e.g. internal testing).
+  const KLAVIYO_SITE = 'XVZupa', KREV = '2024-10-15';
+  const e164 = ph => { const d = (ph || '').replace(/\D/g, ''); if (d.length === 10) return '+52' + d; if (d.length === 12 && d.startsWith('52')) return '+' + d; return null; };
+  function sendLead(lead, stage) {
+    if (window.REGINA_LEADS_OFF || !lead || !lead.email) return Promise.resolve(false);
+    const ls = lines();
+    const cart = ls.map(l => ({ producto: l.p.t, variante: l.v.t, cantidad: l.q, precio: l.v.p, url: STORE + '/products/' + l.p.h, imagen: l.p.img[0] }));
+    const phone = e164(lead.phone);
+    const profile = { email: lead.email.trim(), first_name: lead.first || undefined, last_name: lead.last || undefined,
+      location: { zip: lead.zip || undefined, city: lead.city || undefined, country: 'Mexico' },
+      properties: { telefono_capturado: lead.phone || '', acepta_novedades: !!lead.news, origen_lead: 'Sitio preview · popup antes del checkout' } };
+    if (phone) profile.phone_number = phone;
+    const post = (path, data) => fetch(`https://a.klaviyo.com/client/${path}/?company_id=${KLAVIYO_SITE}`, {
+      method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', revision: KREV }, body: JSON.stringify({ data })
+    }).then(r => r.ok).catch(() => false);
+    const reqs = [
+      post('profiles', { type: 'profile', attributes: profile }),
+      post('events', { type: 'event', attributes: {
+        metric: { data: { type: 'metric', attributes: { name: 'Lead antes de checkout' } } },
+        profile: { data: { type: 'profile', attributes: phone ? { email: profile.email, phone_number: phone } : { email: profile.email } } },
+        value: subtotal(), value_currency: 'MXN', unique_id: 'lead-' + Date.now(),
+        properties: { etapa: stage, subtotal: subtotal(), piezas: count(), productos: cart, checkout_url: checkoutUrl(lead) } } })
+    ];
+    // never block the shopper more than ~2.5s
+    return Promise.race([Promise.all(reqs).then(r => r.every(Boolean)), new Promise(res => setTimeout(() => res(false), 2500))]);
+  }
+
   /* ---------- checkout popup (lead capture → checkout page) ---------- */
   const LEAD = 'regina-lead';
   const getLead = () => { try { return JSON.parse(localStorage.getItem(LEAD) || 'null'); } catch (e) { return null; } };
@@ -129,7 +158,7 @@
               <label>Ciudad<input name="city" autocomplete="address-level2"></label>
             </div>
             <label class="co-opt"><input type="checkbox" name="news" checked> Quiero recibir novedades de Regina</label>
-            <p class="co-err" role="alert" hidden>Completa nombre, apellido, correo y teléfono.</p>
+            <p class="co-err" role="alert" hidden>Completa nombre, apellido, correo y un teléfono de 10 dígitos</p>
             <button class="btn btn-block co-go" type="submit">Continuar al pago</button>
             <ul class="co-trust"><li>Envío gratis desde $1,499</li><li>3 meses sin intereses</li><li>Entregas a todo México</li></ul>
           </form>
@@ -139,11 +168,13 @@
       m.querySelector('form').addEventListener('submit', e => {
         e.preventDefault();
         const f = new FormData(e.target); const lead = Object.fromEntries(f.entries());
-        const ok = lead.first && lead.last && /\S+@\S+\.\S+/.test(lead.email) && (lead.phone || '').replace(/\D/g, '').length >= 10;
+        const ok = lead.first && lead.last && /\S+@\S+\.\S+/.test(lead.email) && !!e164(lead.phone);
         m.querySelector('.co-err').hidden = !!ok; if (!ok) return;
+        lead.news = !!f.get('news');
         try { localStorage.setItem(LEAD, JSON.stringify(lead)); } catch (er) {}
         document.dispatchEvent(new CustomEvent('regina:lead', { detail: lead }));
-        location.href = 'checkout.html';
+        const btn = m.querySelector('.co-go'); btn.disabled = true; btn.textContent = 'Guardando tus datos…';
+        sendLead(lead, 'popup').finally(() => { location.href = 'checkout.html'; });
       });
     }
     const lead = getLead() || {};
@@ -181,5 +212,5 @@
   document.addEventListener('mouseover', e => { const c = e.target.closest('[data-hovervid]'); if (!c || RM.matches) return; const v = c.querySelector('video'); if (v) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } });
   document.addEventListener('mouseout', e => { const c = e.target.closest('[data-hovervid]'); if (!c || c.contains(e.relatedTarget)) return; const v = c.querySelector('video'); if (v) v.pause(); });
 
-  window.RGK = { RG, find, inCol, money, money0, img, minPrice, shortName, add, setQty, lines, subtotal, count, checkoutUrl, getLead, Cart, FREE_SHIP, openCheckoutPopup, STORE };
+  window.RGK = { RG, find, inCol, money, money0, img, minPrice, shortName, add, setQty, lines, subtotal, count, checkoutUrl, getLead, Cart, FREE_SHIP, openCheckoutPopup, STORE, sendLead, e164 };
 })();
