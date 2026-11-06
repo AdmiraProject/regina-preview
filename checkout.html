@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout · Regina</title>
+<link rel="icon" href="media/brand/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#032453;--ink:#010F2B;--crema:#FAFAF8;--lino:#F3F3F1;--niebla:#E4E4E1;--grafito:#767676;--calida:#EAE2D6;--ok:#5A7A5A;--err:#de4242}
+*{box-sizing:border-box}html,body{margin:0}body{font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);background:#fff}
+a{color:var(--navy)}
+.top{border-bottom:1px solid var(--niebla);padding:20px 0;text-align:center}.top img{height:44px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:calc(100vh - 85px)}
+.main{padding:40px 56px 64px;max-width:640px;margin-left:auto;width:100%}
+.side{background:var(--lino);border-left:1px solid var(--niebla);padding:40px 56px}
+.side-in{max-width:460px;position:sticky;top:32px}
+.crumbs{font-size:13px;color:var(--grafito);margin-bottom:28px}.crumbs b{color:var(--ink);font-weight:500}
+h2{font:500 20px/1.3 Inter;margin:32px 0 14px}h2:first-of-type{margin-top:0}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}.f .full{grid-column:1/-1}
+input,select{width:100%;height:50px;border:1px solid #d6d6d2;border-radius:8px;padding:0 14px;font:15px Inter;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:2px solid var(--navy);outline-offset:-1px;border-color:var(--navy)}
+label.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.box{border:1px solid #d6d6d2;border-radius:8px;overflow:hidden}
+.opt{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #d6d6d2;cursor:pointer;background:#fff}
+.opt:last-child{border-bottom:0}.opt input{width:18px;height:18px;accent-color:var(--navy)}
+.opt.on{background:#f4f6fa;outline:1px solid var(--navy);outline-offset:-1px}.opt .r{margin-left:auto;font-weight:500}
+.opt small{display:block;color:var(--grafito);font-size:13px}
+.pay{width:100%;height:58px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:600 17px Inter;margin-top:28px;cursor:pointer}
+.pay:hover{background:var(--ink)}
+.note{font-size:13px;color:var(--grafito);margin-top:12px;text-align:center}
+.li{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;margin-bottom:16px}
+.li .im{position:relative;width:64px;height:64px;border:1px solid var(--niebla);border-radius:8px;background:#fff}
+.li .im img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.li .q{position:absolute;top:-8px;right:-8px;background:var(--grafito);color:#fff;font-size:12px;min-width:22px;height:22px;border-radius:11px;display:grid;place-items:center}
+.li small{display:block;color:var(--grafito);font-size:13px}
+.rows{border-top:1px solid var(--niebla);margin-top:20px;padding-top:16px}
+.row{display:flex;justify-content:space-between;margin:8px 0;font-size:14px}.row.t{font-size:19px;font-weight:600;margin-top:16px}.row.t small{font-size:12px;color:var(--grafito);font-weight:400;margin-right:6px}
+.disc{display:flex;gap:10px;margin:20px 0 4px}.disc button{height:50px;padding:0 18px;border-radius:8px;border:1px solid #d6d6d2;background:var(--niebla);font:500 14px Inter;cursor:pointer}
+.empty{text-align:center;padding:80px 20px}
+.back{display:inline-block;margin-top:20px;font-size:14px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.side{order:-1;border-left:0;border-bottom:1px solid var(--niebla);padding:24px 20px}.main{padding:28px 20px 48px;margin:0}.side-in{position:static}}
+</style>
+</head>
+<body>
+<header class="top"><a href="index.html"><img src="media/brand/logo.svg" alt="Regina"></a></header>
+<div class="wrap" id="app"></div>
+<script src="data.js?v=1"></script>
+<script src="core.js?v=1"></script>
+<script>
+(function(){
+  const K=window.RGK, app=document.getElementById('app'), ls=K.lines(), lead=K.getLead()||{};
+  if(!ls.length){app.style.display='block';app.innerHTML='<div class="empty"><h2>Tu carrito está vacío</h2><a class="back" href="index.html">← Volver a la tienda</a></div>';return;}
+  const sub=K.subtotal(), free=sub>=K.FREE_SHIP;
+  const v=n=>(lead[n]||'').replace(/"/g,'&quot;');
+  app.innerHTML=`
+  <main class="main">
+    <div class="crumbs">Carrito › <b>Información</b> › Envío › Pago</div>
+    <form id="f" novalidate>
+      <h2>Contacto</h2>
+      <div class="f"><label class="sr" for="em">Correo</label><input class="full" id="em" name="email" type="email" placeholder="Correo electrónico" value="${v('email')}" required></div>
+      <h2>Entrega</h2>
+      <div class="f">
+        <select class="full" aria-label="País"><option>México</option></select>
+        <input name="first" placeholder="Nombre" aria-label="Nombre" value="${v('first')}" required>
+        <input name="last" placeholder="Apellidos" aria-label="Apellidos" value="${v('last')}" required>
+        <input class="full" name="address" placeholder="Calle y número" aria-label="Calle y número" value="${v('address')}">
+        <input name="zip" placeholder="Código postal" aria-label="Código postal" inputmode="numeric" maxlength="5" value="${v('zip')}">
+        <input name="city" placeholder="Ciudad" aria-label="Ciudad" value="${v('city')}">
+        <input class="full" name="phone" type="tel" placeholder="Teléfono" aria-label="Teléfono" value="${v('phone')}">
+      </div>
+      <h2>Método de envío</h2>
+      <div class="box"><label class="opt on"><input type="radio" checked name="ship"><span>Envío a domicilio<small>Entregas a todo México</small></span><span class="r">${free?'Gratis':'Se calcula en el pago'}</span></label></div>
+      <h2>Pago</h2>
+      <p style="margin:-6px 0 12px;color:var(--grafito);font-size:14px">Todas las transacciones son seguras y están encriptadas.</p>
+      <div class="box" id="pm">
+        <label class="opt on"><input type="radio" name="pm" checked><span>Tarjeta de crédito o débito<small>3 meses sin intereses con tarjetas participantes</small></span></label>
+        <label class="opt"><input type="radio" name="pm"><span>Otros métodos disponibles en el pago seguro</span></label>
+      </div>
+      <button class="pay" type="submit">Pagar ahora · ${K.money(sub)}</button>
+      <p class="note">Te llevamos al pago seguro de regina.com.mx con tu pedido y datos ya cargados.</p>
+      <a class="back" href="index.html">← Seguir comprando</a>
+    </form>
+  </main>
+  <aside class="side"><div class="side-in">
+    ${ls.map(l=>`<div class="li"><div class="im"><img src="${K.img(l.p.img[0],160)}" alt=""><span class="q">${l.q}</span></div><div>${l.p.t}<small>${l.v.t!=='Default Title'?l.v.t:''}</small></div><b>${K.money(l.v.p*l.q)}</b></div>`).join('')}
+    <div class="disc"><input placeholder="Código de descuento" aria-label="Código de descuento"><button type="button" onclick="alert('El código se aplica en el pago seguro de regina.com.mx')">Aplicar</button></div>
+    <div class="rows">
+      <div class="row"><span>Subtotal</span><span>${K.money(sub)}</span></div>
+      <div class="row"><span>Envío</span><span>${free?'Gratis':'Se calcula en el pago'}</span></div>
+      <div class="row t"><span>Total</span><span><small>MXN</small>${K.money(sub)}</span></div>
+    </div>
+  </div></aside>`;
+  document.querySelectorAll('.opt input').forEach(i=>i.addEventListener('change',()=>{i.closest('.box').querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o.contains(i)))}));
+  document.getElementById('f').addEventListener('submit',e=>{
+    e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());
+    if(!/\S+@\S+\.\S+/.test(d.email||'')){document.getElementById('em').focus();return;}
+    const nl={...lead,...d};try{localStorage.setItem('regina-lead',JSON.stringify(nl))}catch(er){}
+    location.href=K.checkoutUrl(nl);
+  });
+})();
+</script>
+</body>
+</html>
