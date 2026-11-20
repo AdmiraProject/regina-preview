@@ -39,7 +39,6 @@
     const h = new URLSearchParams(location.search).get('h');
     const p = K.find(h) || K.find(document.body.dataset.page === 'pdp' ? 'cobertor-texturelle-capri-malva' : 'toalla-grosso');
     if (!p) return;
-    // v1 (Weezie): .pg-rail thumbs + .pg-slides ; v2 (Olipop): .gal-grid tiles + #feat
     const thumbs = [...document.querySelectorAll('.pg-rail [data-g], .gal-grid [data-gi]')];
     thumbs.forEach(b => { if (b.querySelector('.tlab')) return; const im = b.querySelector('img'); const l = view(im && (im.getAttribute('src') || '')); if (l) { b.style.position = 'relative'; b.insertAdjacentHTML('beforeend', `<span class="tlab">${l}</span>`); } });
     document.querySelectorAll('.pg-slides > img, .pg-slides > div, .pg-slides > figure').forEach(s => { if (s.querySelector && s.querySelector('.vlab')) return; const im = s.tagName === 'IMG' ? s : s.querySelector('img'); const l = view(im && im.getAttribute('src')); if (l && s.tagName !== 'IMG') { s.style.position = 'relative'; s.insertAdjacentHTML('beforeend', `<span class="vlab">${l}</span>`); } });

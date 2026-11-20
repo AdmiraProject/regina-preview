@@ -1,4 +1,3 @@
-/* Regina v2 — Olipop-structure shell + home + PDP renderers */
 (function () {
   const K = window.RGK; const $ = (s, r) => (r || document).querySelector(s); const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
   const STORE = K.STORE;
@@ -177,7 +176,6 @@
     </div>`;
     K.Cart.upsell = ['toalla-grosso', 'cobertor-regina-400-plus-petalis', 'cobertor-baby-seduccion-osito-estrella', 'set-de-cortinas-blackout-celine-black', 'cobertor-texturelle-capri-malva', 'cobertor-boutique-bubble-onyx'];
 
-    // announcement slider (manual, like Olipop)
     let ai = 0; const at = $('.ann-track'); const n = $$('.ann-slide').length;
     const go = d => { ai = (ai + d + n) % n; at.style.transform = `translateX(${-100 * ai}%)`; };
     $('.ann-prev').onclick = () => go(-1); $('.ann-next').onclick = () => go(1);

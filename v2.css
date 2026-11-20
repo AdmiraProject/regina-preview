@@ -1,14 +1,14 @@
-/* Regina v2 — drinkolipop.com structure 1:1, Regina brand tokens */
+
 :root{
-  --cream:#FAF7F2;      /* base (olipop #FFF6EA) */
-  --cream2:#F6F1E9;     /* olipop #FFF7E5 */
-  --cream3:#FDFBF8;     /* olipop #FFFBF5 */
-  --line:#EAE2D6;       /* olipop sand line #F3E4CD → crema cálida */
-  --navy:#002554;       /* olipop forest #14433D → Pantone 655 */
-  --navy2:#032453;      /* olipop evergreen #034638 */
-  --ink:#010F2B;        /* olipop deep green */
+  --cream:#FAF7F2;      
+  --cream2:#F6F1E9;     
+  --cream3:#FDFBF8;     
+  --line:#EAE2D6;       
+  --navy:#002554;       
+  --navy2:#032453;      
+  --ink:#010F2B;        
   --hover:#000916;
-  --calida:#EAE2D6;     /* olipop mint #98E1C3 → accent / offset shadow */
+  --calida:#EAE2D6;     
   --calida2:#F1EBE1;
   --salvia:#5A7A5A;     /* eyebrow color */
   --grafito:#767676;

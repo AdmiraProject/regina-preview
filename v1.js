@@ -1,4 +1,3 @@
-/* Regina v1 — Weezie-structure shell + home + PDP. Real Regina data only (window.RG via core.js RGK). */
 (function () {
   const K = window.RGK; if (!K) return;
   const RG = K.RG;

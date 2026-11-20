@@ -1,4 +1,3 @@
-/* Regina v3 = v1 (Weezie 1:1) with single one-shot full-width videos in the two video sections (like weezietowels.com) */
 (function () {
   const swap = () => {
     const vh = document.querySelectorAll('.vhero');

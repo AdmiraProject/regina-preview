@@ -1,11 +1,8 @@
-/* Regina v1 — Weezie motion layer (ported from weezietowels.com theme: animations.js + ScrapbookBanner/ParallaxManager)
-   1) Dawn scroll-trigger slide-in reveals  2) scrapbook: sticky text + parallax polaroids + fade-in  3) endless centered video reel */
 (function () {
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
 
-  /* ---------- 1. scroll-trigger animate--slide-in (Weezie/Dawn animations.js) ---------- */
   function reveals() {
     const tag = (els, cascade) => els.forEach(el => { el.classList.add('scroll-trigger', 'animate--slide-in'); if (cascade) el.setAttribute('data-cascade', ''); });
     tag($$('.vhero'));                                    // video-section__media
@@ -37,7 +34,6 @@
     addEventListener('scroll', () => { const vh = innerHeight; $$('.scroll-trigger--offscreen').forEach(t => { const r = t.getBoundingClientRect(); if (r.top < vh - 50 && r.bottom > 0) { t.classList.remove('scroll-trigger--offscreen'); io.unobserve(t); } }); }, { passive: true });
   }
 
-  /* ---------- 2. scrapbook banner (text-left layout, exact Weezie positions) ---------- */
   const SB = [ // width %, left %, top (vw), rotate deg, parallax strength
     [46, 27, 0, -5.53, 0.1], [41, 81, 7, 8.409, -0.1], [39, 33, 33, -10.88, 0.1], [36, 77, 49, 10.88, -0.2],
     [40, 33, 64, 5.53, 0.15], [36, 83, 80, -8.409, -0.15], [35, 32, 96, 8.409, 0.25], [36, 76, 114, -5.53, -0.1]

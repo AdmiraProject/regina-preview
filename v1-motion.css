@@ -1,12 +1,11 @@
-/* ===== Weezie motion layer (v1-motion.js) — exact Dawn/Weezie values ===== */
+
 @keyframes slideIn{0%{transform:translateY(20px);opacity:.01}to{transform:translateY(0);opacity:1}}
 @media(prefers-reduced-motion:no-preference){
   .scroll-trigger.animate--slide-in{opacity:.01;transform:translateY(20px)}
   .scroll-trigger:not(.scroll-trigger--offscreen).animate--slide-in{animation:slideIn .6s cubic-bezier(0,0,.3,1) forwards;animation-delay:calc(var(--animation-order,0) * 75ms)}
 }
 
-/* scrapbook (Weezie "A Season for Hosting", text-left): white text half + textured colour panel on the right half,
-   sticky centred text, shaped frames straddling the panel edge, parallax + fade-in */
+
 .scrap{position:relative;overflow:clip;background:var(--crema);background-image:none;margin:80px 0 32px}
 .scrap::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:50%;z-index:0;
   background-color:var(--calida);
@@ -45,7 +44,7 @@
 }
 @media(prefers-reduced-motion:reduce){.sb-in{opacity:1;transition:none}}
 
-/* ===== 1.17 video reel (Weezie Tolstoy look): textured colour mats, straight tiles, edge-to-edge, endless ===== */
+
 .ugc{padding:40px 0 0}
 .ugc h2{margin-bottom:24px}
 .ugc .rc-wrap{position:relative}
@@ -67,7 +66,7 @@
 .ugc .rc-arr{width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);z-index:3}
 @media(max-width:749px){.ugc-t{flex-basis:72vw!important}}
 
-/* ===== 1.14 image with text — Weezie "at home with": script eyebrow, big rounded video, outline CTA ===== */
+
 .iwt{padding-top:64px}
 .iwt-g{align-items:center;padding:32px 20px!important}
 @media(min-width:1024px){.iwt-g{padding:32px 40px!important}}
